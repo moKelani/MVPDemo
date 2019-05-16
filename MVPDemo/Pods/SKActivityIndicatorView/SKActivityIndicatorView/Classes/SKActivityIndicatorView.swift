@@ -24,7 +24,7 @@ public class SKActivityIndicator: NSObject {
     fileprivate var spinnerColor           : UIColor                = UIColor.darkGray
     fileprivate var backgroundViewColor    : UIColor                = UIColor.init(red  : 0.0, green  : 0.0, blue  : 0.0, alpha  : 0.2)
     fileprivate var activityIndicatorStyle : ActivityIndicatorStyle = .defaultSpinner
-    fileprivate var activityIndicatorTranslucency : UIBlurEffectStyle           = .extraLight
+    fileprivate var activityIndicatorTranslucency : UIBlurEffect.Style           = .extraLight
     
     
     // MARK: - Singleton Accessors
@@ -176,9 +176,9 @@ public class SKActivityIndicator: NSObject {
         var heightHUD: CGFloat = 100
         
         if let statusMessage =  statusLabel?.text, statusMessage.count != 0 {
-            let attributes = [NSAttributedStringKey.font: statusLabel?.font]
+            let attributes = [NSAttributedString.Key.font: statusLabel?.font]
             let options: NSStringDrawingOptions = [.usesFontLeading, .truncatesLastVisibleLine, .usesLineFragmentOrigin]
-            rectLabel = (statusLabel?.text?.boundingRect(with: CGSize(width: 200, height: 300), options: options, attributes: attributes as [NSAttributedStringKey : AnyObject], context: nil))!
+            rectLabel = (statusLabel?.text?.boundingRect(with: CGSize(width: 200, height: 300), options: options, attributes: attributes as [NSAttributedString.Key : AnyObject], context: nil))!
             widthHUD = rectLabel.size.width + 40
             heightHUD = rectLabel.size.height + 75
             if widthHUD < 100 {
@@ -204,9 +204,9 @@ public class SKActivityIndicator: NSObject {
         var keyboardHeight: CGFloat = 0.0
         
         if notification != nil {
-            if let keyboardFrame: NSValue = notification?.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            if let keyboardFrame: NSValue = notification?.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
                 let keyboardRectangle = keyboardFrame.cgRectValue
-                if (notification!.name == NSNotification.Name.UIKeyboardWillShow || notification!.name == NSNotification.Name.UIKeyboardDidShow) {
+                if (notification!.name == NSNotification.Name.UIKeyboardWillShow || notification!.name == NSNotification.Name.UIResponder.keyboardDidShowNotification) {
                     keyboardHeight = keyboardRectangle.height
                 }
             }
@@ -270,11 +270,11 @@ public class SKActivityIndicator: NSObject {
     
     // MARK: - Keyboard Notifications
     fileprivate func registerForKeyboardNotificatoins() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIApplicationDidChangeStatusBarOrientation, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIKeyboardDidHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIApplication.didChangeStatusBarOrientationNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureActivityIndicatorPosition), name: .UIResponder.keyboardDidShowNotification, object: nil)
     }
     
     
